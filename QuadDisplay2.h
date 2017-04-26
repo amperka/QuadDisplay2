@@ -67,6 +67,8 @@
 class QuadDisplay
 {
 private:
+    unsigned long _startMillis = millis();
+    bool _state;
     uint8_t _pinSCK;
     uint8_t _pinDI;
     uint8_t _pinCS;
@@ -83,9 +85,10 @@ public:
     void displayFloat(float val, uint8_t precision, bool padZeros = false);
     void displayDigits(uint8_t digit1, uint8_t digit2, uint8_t digit3, uint8_t digit4);
     void displaySegments(uint32_t digits);
-    void displayClear();
     void displayTemperatureC(int val, bool padZeros = false);
     void displayHumidity(int val, bool padZeros = false);
+    void displayTime(int hour, int minute);
+    void displayClear();
 };
 
 #endif

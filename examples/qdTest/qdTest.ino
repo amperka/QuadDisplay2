@@ -28,7 +28,7 @@ void loop()
 
   // можно показывать температуру в °C
   qd.displayTemperatureC(-5);
-
+  delay(1000);
   // можно показывать нехитрый текст (on/off, например) или
   // произвольную графику
   qd.displayDigits(QD_O, QD_f, QD_f, QD_NONE); // off
