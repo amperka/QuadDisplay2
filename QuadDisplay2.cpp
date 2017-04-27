@@ -191,7 +191,7 @@ void QuadDisplay::displayTime(int hour, int minute)
     uint8_t digits[4] = {0xff, 0xff, 0xff, 0xff};
 
     if (!hour) {
-        igits[0] = numerals[0];
+        digits[0] = numerals[0];
         digits[1] = numerals[0];
     } else {
         if (hour < 10) {
@@ -234,6 +234,6 @@ void QuadDisplay::displayTime(int hour, int minute)
         digits[2] &= QD_DOT;
     } else {
         digits[2] |= ~QD_DOT;
-    
+    }
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
