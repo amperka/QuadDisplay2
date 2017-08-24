@@ -186,10 +186,9 @@ void QuadDisplay::displayHumidity(int val, bool padZeros)
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
 
-void QuadDisplay::displayTime(int hour, int minute)
+void QuadDisplay::displayScore(int hour, int minute, bool blink)
 {
     uint8_t digits[4] = {0xff, 0xff, 0xff, 0xff};
-
     if (!hour) {
         digits[0] = numerals[0];
         digits[1] = numerals[0];
@@ -225,15 +224,18 @@ void QuadDisplay::displayTime(int hour, int minute)
                 break;
         }
     }
-
-    if (millis() - _startMillis > 500) {
-        _state = !_state;
-        _startMillis = millis();
-    }
-    if (_state) {
-        digits[2] &= QD_DOT;
+    if (blink) {
+    	if (millis() - _startMillis > 500) {
+        	_state = !_state;
+        	_startMillis = millis();
+    	}
+    	if (_state) {
+        	digits[2] &= QD_DOT;
+    	} else {
+        	digits[2] |= ~QD_DOT;
+    	}
     } else {
-        digits[2] |= ~QD_DOT;
+    	digits[2] &= QD_DOT;
     }
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }

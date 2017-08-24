@@ -52,6 +52,7 @@
 #define QD_h 0b11010001
 #define QD_I QD_1
 #define QD_J 0b10001111
+#define QD_K QD_H
 #define QD_L 0b11100011
 #define QD_n 0b11010101
 #define QD_o 0b11000101
@@ -87,8 +88,9 @@ public:
     void displaySegments(uint32_t digits);
     void displayTemperatureC(int val, bool padZeros = false);
     void displayHumidity(int val, bool padZeros = false);
-    void displayTime(int hour, int minute);
+    void displayScore(int hour, int minute, bool blink = false);
     void displayClear();
+
 };
 
 #endif
