@@ -1,10 +1,10 @@
 #ifndef QUAD_DISPLAY
 #define QUAD_DISPLAY
 
-#include <Arduino.h>
 #include "pins_arduino.h"
-#include <inttypes.h> 
+#include <Arduino.h>
 #include <SPI.h>
+#include <inttypes.h>
 /*
 
     ___7___
@@ -19,14 +19,13 @@
                *0
  */
 
-#define QD_NONE  0b11111111
-#define QD_DOT   0b11111110
+#define QD_NONE 0b11111111
+#define QD_DOT 0b11111110
 #define QD_MINUS 0b11111101
 
-#define QD_UNDERSCORE       0b11101111
-#define QD_DEGREE           0b00111001
-#define QD_UNDER_DEGREE     0b11000101
-
+#define QD_UNDERSCORE 0b11101111
+#define QD_DEGREE 0b00111001
+#define QD_UNDER_DEGREE 0b11000101
 
 #define QD_0 0b00000011
 #define QD_1 0b10011111
@@ -65,8 +64,7 @@
 #define QD_U 0b10000011
 #define QD_Y 0b10001001
 
-class QuadDisplay
-{
+class QuadDisplay {
 private:
     unsigned long _startMillis = millis();
     bool _state;
@@ -80,6 +78,7 @@ private:
     void endWrite();
     uint8_t reverse(uint8_t x);
     void setDots(uint8_t array[]);
+
 public:
     QuadDisplay(uint8_t pinCS);
     QuadDisplay(uint8_t pinCS, boolean uspSPI);
@@ -94,7 +93,6 @@ public:
     void displayHumidity(int val, bool padZeros = false);
     void displayScore(int hour, int minute, bool blink = false);
     void displayClear();
-
 };
 
 #endif

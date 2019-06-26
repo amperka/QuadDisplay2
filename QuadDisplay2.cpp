@@ -1,49 +1,43 @@
 #include "QuadDisplay2.h"
 
+const static uint8_t numerals[] = { QD_0, QD_1, QD_2, QD_3, QD_4, QD_5, QD_6, QD_7, QD_8, QD_9 };
 
-const static uint8_t numerals[] = {QD_0, QD_1, QD_2, QD_3, QD_4, QD_5, QD_6, QD_7, QD_8, QD_9};
-
-QuadDisplay::QuadDisplay(uint8_t pinCS)
-{
+QuadDisplay::QuadDisplay(uint8_t pinCS) {
     _pinCS = pinCS;
     _useSPI = true;
 }
-QuadDisplay::QuadDisplay(uint8_t pinCS, boolean useSPI)
-{
-    if(useSPI){
-    _pinCS = pinCS;
-    _useSPI = true;
-    }else{
-    _pinCS = pinCS;
-    _pinSCK = SCK;
-    _pinDI = MOSI;
-    _useSPI = false;
+QuadDisplay::QuadDisplay(uint8_t pinCS, boolean useSPI) {
+    if (useSPI) {
+        _pinCS = pinCS;
+        _useSPI = true;
+    } else {
+        _pinCS = pinCS;
+        _pinSCK = SCK;
+        _pinDI = MOSI;
+        _useSPI = false;
     }
 }
 
-QuadDisplay::QuadDisplay(uint8_t pinCS, uint8_t pinMOSI, uint8_t pinSCK)
-{
+QuadDisplay::QuadDisplay(uint8_t pinCS, uint8_t pinMOSI, uint8_t pinSCK) {
     _pinCS = pinCS;
     _pinDI = pinMOSI;
     _pinSCK = pinSCK;
 }
 
-void QuadDisplay::begin()
-{
+void QuadDisplay::begin() {
     pinMode(_pinCS, OUTPUT);
     digitalWrite(_pinCS, LOW);
-    if (_useSPI){
-    SPI.begin();
-    }else{
-    pinMode(_pinSCK, OUTPUT);
-    pinMode(_pinDI, OUTPUT);
-    digitalWrite(_pinSCK, LOW);
-    digitalWrite(_pinDI, LOW);
+    if (_useSPI) {
+        SPI.begin();
+    } else {
+        pinMode(_pinSCK, OUTPUT);
+        pinMode(_pinDI, OUTPUT);
+        digitalWrite(_pinSCK, LOW);
+        digitalWrite(_pinDI, LOW);
     }
 }
 
-void QuadDisplay::end()
-{
+void QuadDisplay::end() {
     digitalWrite(_pinDI, LOW);
     digitalWrite(_pinSCK, LOW);
     digitalWrite(_pinCS, LOW);
@@ -52,20 +46,17 @@ void QuadDisplay::end()
     pinMode(_pinCS, INPUT);
 }
 
-void QuadDisplay::beginWrite()
-{
+void QuadDisplay::beginWrite() {
     digitalWrite(_pinSCK, LOW);
     digitalWrite(_pinDI, LOW);
     digitalWrite(_pinCS, LOW);
 }
 
-void QuadDisplay::writeData(uint8_t data, uint8_t n)
-{
+void QuadDisplay::writeData(uint8_t data, uint8_t n) {
     shiftOut(_pinDI, _pinSCK, LSBFIRST, data);
 }
 
-void QuadDisplay::writeData(uint32_t data, uint8_t n)
-{
+void QuadDisplay::writeData(uint32_t data, uint8_t n) {
     for (uint8_t i = n; i > 0; i--) {
         digitalWrite(_pinDI, (data & 1));
         digitalWrite(_pinSCK, HIGH);
@@ -74,8 +65,7 @@ void QuadDisplay::writeData(uint32_t data, uint8_t n)
     }
 }
 
-void QuadDisplay::endWrite()
-{
+void QuadDisplay::endWrite() {
     digitalWrite(_pinDI, HIGH);
     digitalWrite(_pinSCK, HIGH);
     digitalWrite(_pinSCK, LOW);
@@ -85,63 +75,58 @@ void QuadDisplay::endWrite()
     digitalWrite(_pinSCK, LOW);
 }
 
-uint8_t QuadDisplay::reverse(uint8_t x){
-uint8_t mask = x & 0x01;
-x = x>>1;
-x = ((x & 0x55) << 1) | ((x & 0xAA) >> 1);
-x = ((x & 0xCC) >> 2) | ((x & 0x33) << 2);
-x = (x >> 4) | (x << 4);
-x = x | mask;
-return x;
+uint8_t QuadDisplay::reverse(uint8_t x) {
+    uint8_t mask = x & 0x01;
+    x = x >> 1;
+    x = ((x & 0x55) << 1) | ((x & 0xAA) >> 1);
+    x = ((x & 0xCC) >> 2) | ((x & 0x33) << 2);
+    x = (x >> 4) | (x << 4);
+    x = x | mask;
+    return x;
 }
-void QuadDisplay::setDots(uint8_t array[]){
-    for (int i = 0; i < 4;i++){
-        if ((array[i] & 0x01 && i !=0) == 0){
-            array[i-1] &=0b11111110;
-            array[i]  |=0b000000001;
+void QuadDisplay::setDots(uint8_t array[]) {
+    for (int i = 0; i < 4; i++) {
+        if ((array[i] & 0x01 && i != 0) == 0) {
+            array[i - 1] &= 0b11111110;
+            array[i] |= 0b000000001;
         }
     }
 }
 
-
-
-void QuadDisplay::displayDigits(uint8_t digit1, uint8_t digit2, uint8_t digit3, uint8_t digit4){
-    if (_useSPI){
-    uint8_t *digitsArray = new uint8_t[4]{digit1,digit2,digit3,digit4};
-    setDots(digitsArray);
-    digitalWrite(_pinCS, LOW);
-    SPI.transfer(reverse(*digitsArray));
-    SPI.transfer(reverse(*(digitsArray+1)));
-    SPI.transfer(reverse(*(digitsArray+2)));
-    SPI.transfer(reverse(*(digitsArray+3)));
-    digitalWrite(_pinCS, HIGH);
-	delete digitsArray;
-    }else{
-    beginWrite();
-    writeData(digit1);
-    writeData(digit2);
-    writeData(digit3);
-    writeData(digit4);
-    endWrite();
+void QuadDisplay::displayDigits(uint8_t digit1, uint8_t digit2, uint8_t digit3,
+    uint8_t digit4) {
+    if (_useSPI) {
+        uint8_t* digitsArray = new uint8_t[4] { digit1, digit2, digit3, digit4 };
+        setDots(digitsArray);
+        digitalWrite(_pinCS, LOW);
+        SPI.transfer(reverse(*digitsArray));
+        SPI.transfer(reverse(*(digitsArray + 1)));
+        SPI.transfer(reverse(*(digitsArray + 2)));
+        SPI.transfer(reverse(*(digitsArray + 3)));
+        digitalWrite(_pinCS, HIGH);
+        delete digitsArray;
+    } else {
+        beginWrite();
+        writeData(digit1);
+        writeData(digit2);
+        writeData(digit3);
+        writeData(digit4);
+        endWrite();
     }
 }
 
-void QuadDisplay::displaySegments(uint32_t digits)
-{
+void QuadDisplay::displaySegments(uint32_t digits) {
     beginWrite();
     writeData(digits);
     endWrite();
 }
 
-void QuadDisplay::displayClear()
-{
+void QuadDisplay::displayClear() {
     displayDigits(QD_NONE, QD_NONE, QD_NONE, QD_NONE);
 }
 
-
-void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots)
-{
-    uint8_t digits[4] = {0xff, 0xff, 0xff, 0xff};
+void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots) {
+    uint8_t digits[4] = { 0xff, 0xff, 0xff, 0xff };
 
     if (!padZeros && !val) {
         digits[3] = numerals[0];
@@ -150,7 +135,7 @@ void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots)
         val = abs(val);
 
         int8_t i;
-        for (i = 4; i--; ) {
+        for (i = 4; i--;) {
             uint8_t digit = val % 10;
             digits[i] = (val || padZeros) ? numerals[digit] : 0xff;
             val /= 10;
@@ -161,15 +146,12 @@ void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots)
         if (negative)
             digits[i - 1] = QD_MINUS;
         digits[4 - dots] &= QD_DOT;
-        }
-        
-
+    }
 
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
 
-void QuadDisplay::displayFloat(float val, uint8_t precision, bool padZeros)
-{
+void QuadDisplay::displayFloat(float val, uint8_t precision, bool padZeros) {
     uint8_t dot = 0;
     while (precision) {
         val *= 10;
@@ -179,11 +161,10 @@ void QuadDisplay::displayFloat(float val, uint8_t precision, bool padZeros)
     displayInt((int)val, padZeros, dot);
 }
 
-void QuadDisplay::displayTemperatureC(int val, bool padZeros)
-{
+void QuadDisplay::displayTemperatureC(int val, bool padZeros) {
 
-    uint8_t digits[4] = {0xff, 0xff, QD_DEGREE, QD_C};
-    
+    uint8_t digits[4] = { 0xff, 0xff, QD_DEGREE, QD_C };
+
     if (!padZeros && !val)
         digits[1] = numerals[0];
     else {
@@ -191,7 +172,7 @@ void QuadDisplay::displayTemperatureC(int val, bool padZeros)
         val = abs(val);
 
         int8_t i;
-        for (i = 2; i--; ) {
+        for (i = 2; i--;) {
             uint8_t digit = val % 10;
             digits[i] = (val || padZeros) ? numerals[digit] : 0xff;
 
@@ -201,16 +182,15 @@ void QuadDisplay::displayTemperatureC(int val, bool padZeros)
         }
 
         if (negative)
-            digits[max(0, i-1)] = QD_MINUS;
+            digits[max(0, i - 1)] = QD_MINUS;
     }
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
 
-void QuadDisplay::displayHumidity(int val, bool padZeros)
-{
+void QuadDisplay::displayHumidity(int val, bool padZeros) {
 
-    uint8_t digits[4] = {0xff, 0xff, QD_DEGREE, QD_UNDER_DEGREE};
-    
+    uint8_t digits[4] = { 0xff, 0xff, QD_DEGREE, QD_UNDER_DEGREE };
+
     if (!padZeros && !val)
         digits[1] = numerals[0];
     else {
@@ -218,7 +198,7 @@ void QuadDisplay::displayHumidity(int val, bool padZeros)
         val = abs(val);
 
         int8_t i;
-        for (i = 2; i--; ) {
+        for (i = 2; i--;) {
             uint8_t digit = val % 10;
             digits[i] = (val || padZeros) ? numerals[digit] : 0xff;
 
@@ -226,16 +206,14 @@ void QuadDisplay::displayHumidity(int val, bool padZeros)
             if (!val && !padZeros)
                 break;
         }
-
         if (negative)
-            digits[max(0, i-1)] = QD_MINUS;
+            digits[max(0, i - 1)] = QD_MINUS;
     }
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
 
-void QuadDisplay::displayScore(int hour, int minute, bool blink)
-{
-    uint8_t digits[4] = {0xff, 0xff, 0xff, 0xff};
+void QuadDisplay::displayScore(int hour, int minute, bool blink) {
+    uint8_t digits[4] = { 0xff, 0xff, 0xff, 0xff };
     if (!hour) {
         digits[0] = numerals[0];
         digits[1] = numerals[0];
@@ -244,7 +222,7 @@ void QuadDisplay::displayScore(int hour, int minute, bool blink)
             digits[0] = numerals[0];
         }
         int8_t i;
-        for (i = 2; i--; ) {
+        for (i = 2; i--;) {
             uint8_t digit = hour % 10;
             digits[i] = hour ? numerals[digit] : 0xff;
 
@@ -262,7 +240,7 @@ void QuadDisplay::displayScore(int hour, int minute, bool blink)
             digits[2] = numerals[0];
         }
         int8_t i;
-       	for (i = 4; i--; ) {
+        for (i = 4; i--;) {
             uint8_t digit = minute % 10;
             digits[i] = minute ? numerals[digit] : 0xff;
 
@@ -272,17 +250,17 @@ void QuadDisplay::displayScore(int hour, int minute, bool blink)
         }
     }
     if (blink) {
-    	if (millis() - _startMillis > 500) {
-        	_state = !_state;
-        	_startMillis = millis();
-    	}
-    	if (_state) {
-        	digits[2] &= QD_DOT;
-    	} else {
-        	digits[2] |= ~QD_DOT;
-    	}
+        if (millis() - _startMillis > 500) {
+            _state = !_state;
+            _startMillis = millis();
+        }
+        if (_state) {
+            digits[2] &= QD_DOT;
+        } else {
+            digits[2] |= ~QD_DOT;
+        }
     } else {
-    	digits[2] &= QD_DOT;
+        digits[2] &= QD_DOT;
     }
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
