@@ -73,12 +73,16 @@ private:
     uint8_t _pinSCK;
     uint8_t _pinDI;
     uint8_t _pinCS;
+    bool _useSPI;
     void beginWrite();
     void writeData(uint8_t data, uint8_t n = 8);
     void writeData(uint32_t data, uint8_t n = 32);
     void endWrite();
+    uint8_t reverse(uint8_t x);
+    void setDots(uint8_t array[]);
 public:
     QuadDisplay(uint8_t pinCS);
+    QuadDisplay(uint8_t pinCS, boolean uspSPI);
     QuadDisplay(uint8_t pinCS, uint8_t pinMOSI, uint8_t pinSCK);
     void begin();
     void end();
