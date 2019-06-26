@@ -115,7 +115,7 @@ void QuadDisplay::displayDigits(uint8_t digit1, uint8_t digit2, uint8_t digit3, 
     SPI.transfer(reverse(*(digitsArray+2)));
     SPI.transfer(reverse(*(digitsArray+3)));
     digitalWrite(_pinCS, HIGH);
-
+	delete digitsArray;
     }else{
     beginWrite();
     writeData(digit1);
