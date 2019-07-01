@@ -6,6 +6,7 @@ QuadDisplay::QuadDisplay(uint8_t pinCS) {
     _pinCS = pinCS;
     _useSPI = true;
 }
+
 QuadDisplay::QuadDisplay(uint8_t pinCS, boolean useSPI) {
     if (useSPI) {
         _pinCS = pinCS;
@@ -84,11 +85,12 @@ uint8_t QuadDisplay::reverse(uint8_t x) {
     x = x | mask;
     return x;
 }
+
 void QuadDisplay::setDots(uint8_t array[]) {
-    for (int i = 0; i < 4; i++) {
-        if ((array[i] & 0x01 && i != 0) == 0) {
-            array[i - 1] &= 0b11111110;
-            array[i] |= 0b000000001;
+    for (int i = 1; i < 4; i++) {
+        if (array[i] & 0x01 == 0) {
+            array[i - 1] &= 0xFE;
+            array[i] |= 0x01;
         }
     }
 }
@@ -96,15 +98,13 @@ void QuadDisplay::setDots(uint8_t array[]) {
 void QuadDisplay::displayDigits(uint8_t digit1, uint8_t digit2, uint8_t digit3,
     uint8_t digit4) {
     if (_useSPI) {
-        uint8_t* digitsArray = new uint8_t[4] { digit1, digit2, digit3, digit4 };
+        uint8_t digitsArray[] = { digit1, digit2, digit3, digit4 };
         setDots(digitsArray);
         digitalWrite(_pinCS, LOW);
-        SPI.transfer(reverse(*digitsArray));
-        SPI.transfer(reverse(*(digitsArray + 1)));
-        SPI.transfer(reverse(*(digitsArray + 2)));
-        SPI.transfer(reverse(*(digitsArray + 3)));
+        for (int i = 0; i < 4; i++) {
+            SPI.transfer(reverse(digitsArray[i]));
+        }
         digitalWrite(_pinCS, HIGH);
-        delete digitsArray;
     } else {
         beginWrite();
         writeData(digit1);
