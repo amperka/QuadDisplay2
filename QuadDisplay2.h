@@ -78,6 +78,7 @@ private:
     void endWrite();
     uint8_t reverse(uint8_t x);
     void setDots(uint8_t array[]);
+    uint8_t getBit(uint8_t, uint8_t);
 
 public:
     QuadDisplay(uint8_t pinCS);

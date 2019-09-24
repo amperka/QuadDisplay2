@@ -70,7 +70,6 @@ void QuadDisplay::endWrite() {
     digitalWrite(_pinDI, HIGH);
     digitalWrite(_pinSCK, HIGH);
     digitalWrite(_pinSCK, LOW);
-    //
     digitalWrite(_pinCS, HIGH);
     digitalWrite(_pinDI, LOW);
     digitalWrite(_pinSCK, LOW);
@@ -96,7 +95,7 @@ void QuadDisplay::setDots(uint8_t array[]) {
 }
 
 void QuadDisplay::displayDigits(uint8_t digit1, uint8_t digit2, uint8_t digit3,
-    uint8_t digit4) {
+                                uint8_t digit4) {
     if (_useSPI) {
         uint8_t digitsArray[] = { digit1, digit2, digit3, digit4 };
         setDots(digitsArray);
@@ -125,6 +124,11 @@ void QuadDisplay::displayClear() {
     displayDigits(QD_NONE, QD_NONE, QD_NONE, QD_NONE);
 }
 
+
+uint8_t QuadDisplay::getBit(uint8_t byte, uint8_t number){
+    return ((byte >> (8 - number)) & 1);
+}
+
 void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots) {
     uint8_t digits[4] = { 0xff, 0xff, 0xff, 0xff };
 
@@ -140,12 +144,26 @@ void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots) {
             digits[i] = (val || padZeros) ? numerals[digit] : 0xff;
             val /= 10;
 
-            if (!val && !padZeros)
+            if (!val && !padZeros) {
                 break;
+            }
         }
-        if (negative)
+        if (negative) {
             digits[i - 1] = QD_MINUS;
-        digits[4 - dots] &= QD_DOT;
+        }
+
+        if (getBit(dots, 8)){
+            digits[3] &= QD_DOT;
+        }
+        if (getBit(dots, 7)){
+            digits[2] &= QD_DOT;
+        }
+        if (getBit(dots, 6)){
+            digits[1] &= QD_DOT;
+        }
+        if (getBit(dots, 5)){
+            digits[0] &= QD_DOT;
+        }
     }
 
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
@@ -165,9 +183,9 @@ void QuadDisplay::displayTemperatureC(int val, bool padZeros) {
 
     uint8_t digits[4] = { 0xff, 0xff, QD_DEGREE, QD_C };
 
-    if (!padZeros && !val)
+    if (!padZeros && !val) {
         digits[1] = numerals[0];
-    else {
+    } else {
         bool negative = val < 0;
         val = abs(val);
 
@@ -177,12 +195,14 @@ void QuadDisplay::displayTemperatureC(int val, bool padZeros) {
             digits[i] = (val || padZeros) ? numerals[digit] : 0xff;
 
             val /= 10;
-            if (!val && !padZeros)
+            if (!val && !padZeros) {
                 break;
+            }
         }
 
-        if (negative)
+        if (negative) {
             digits[max(0, i - 1)] = QD_MINUS;
+        }
     }
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
@@ -191,9 +211,9 @@ void QuadDisplay::displayHumidity(int val, bool padZeros) {
 
     uint8_t digits[4] = { 0xff, 0xff, QD_DEGREE, QD_UNDER_DEGREE };
 
-    if (!padZeros && !val)
+    if (!padZeros && !val) {
         digits[1] = numerals[0];
-    else {
+    } else {
         bool negative = val < 0;
         val = abs(val);
 
@@ -203,11 +223,13 @@ void QuadDisplay::displayHumidity(int val, bool padZeros) {
             digits[i] = (val || padZeros) ? numerals[digit] : 0xff;
 
             val /= 10;
-            if (!val && !padZeros)
+            if (!val && !padZeros) {
                 break;
+            }
         }
-        if (negative)
+        if (negative) {
             digits[max(0, i - 1)] = QD_MINUS;
+        }
     }
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
@@ -227,8 +249,9 @@ void QuadDisplay::displayScore(int hour, int minute, bool blink) {
             digits[i] = hour ? numerals[digit] : 0xff;
 
             hour /= 10;
-            if (!hour)
+            if (!hour) {
                 break;
+            }
         }
     }
 
@@ -245,8 +268,9 @@ void QuadDisplay::displayScore(int hour, int minute, bool blink) {
             digits[i] = minute ? numerals[digit] : 0xff;
 
             minute /= 10;
-            if (!minute)
+            if (!minute) {
                 break;
+            }
         }
     }
     if (blink) {
@@ -255,12 +279,12 @@ void QuadDisplay::displayScore(int hour, int minute, bool blink) {
             _startMillis = millis();
         }
         if (_state) {
-            digits[2] &= QD_DOT;
+            digits[1] &= QD_DOT;
         } else {
-            digits[2] |= ~QD_DOT;
+            digits[1] |= ~QD_DOT;
         }
     } else {
-        digits[2] &= QD_DOT;
+        digits[1] &= QD_DOT;
     }
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
