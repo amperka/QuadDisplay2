@@ -279,12 +279,12 @@ void QuadDisplay::displayScore(int hour, int minute, bool blink) {
             _startMillis = millis();
         }
         if (_state) {
-            digits[2] &= QD_DOT;
+            digits[1] &= QD_DOT;
         } else {
-            digits[2] |= ~QD_DOT;
+            digits[1] |= ~QD_DOT;
         }
     } else {
-        digits[2] &= QD_DOT;
+        digits[1] &= QD_DOT;
     }
     displayDigits(digits[0], digits[1], digits[2], digits[3]);
 }
