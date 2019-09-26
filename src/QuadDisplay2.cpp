@@ -1,3 +1,13 @@
+/*
+ * This file is a part of QuadDisplay2 library.
+ *
+ * Product page: https://https://amperka.ru/product/troyka-quad-display
+ * © Amperka LLC (https://amperka.com, dev@amperka.com)
+ * 
+ * Author: Igor Dementiev <igor@amperka.ru>
+ * License: GPLv3, all text here must be included in any redistribution.
+ */
+
 #include "QuadDisplay2.h"
 
 const static uint8_t numerals[] = { QD_0, QD_1, QD_2, QD_3, QD_4, QD_5, QD_6, QD_7, QD_8, QD_9 };
@@ -95,7 +105,7 @@ void QuadDisplay::setDots(uint8_t array[]) {
 }
 
 void QuadDisplay::displayDigits(uint8_t digit1, uint8_t digit2, uint8_t digit3,
-                                uint8_t digit4) {
+    uint8_t digit4) {
     if (_useSPI) {
         uint8_t digitsArray[] = { digit1, digit2, digit3, digit4 };
         setDots(digitsArray);
@@ -124,8 +134,7 @@ void QuadDisplay::displayClear() {
     displayDigits(QD_NONE, QD_NONE, QD_NONE, QD_NONE);
 }
 
-
-uint8_t QuadDisplay::getBit(uint8_t byte, uint8_t number){
+uint8_t QuadDisplay::getBit(uint8_t byte, uint8_t number) {
     return ((byte >> (8 - number)) & 1);
 }
 
@@ -152,16 +161,16 @@ void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots) {
             digits[i - 1] = QD_MINUS;
         }
 
-        if (getBit(dots, 8)){
+        if (getBit(dots, 8)) {
             digits[3] &= QD_DOT;
         }
-        if (getBit(dots, 7)){
+        if (getBit(dots, 7)) {
             digits[2] &= QD_DOT;
         }
-        if (getBit(dots, 6)){
+        if (getBit(dots, 6)) {
             digits[1] &= QD_DOT;
         }
-        if (getBit(dots, 5)){
+        if (getBit(dots, 5)) {
             digits[0] &= QD_DOT;
         }
     }
