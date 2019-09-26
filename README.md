@@ -1,19 +1,12 @@
 QuadDisplay2
 ============
 
-Библиотека Arduino для модуля [QuadDisplay2].
-
-Установка библиотеки
-====================
-
-В Arduino IDE выберите пункт меню «Скетч» → «Импортировать библиотеку» →
-«Добавить библиотеку…». В появившемся окне выберите скачаный архив с
-библиотекой. Установка завершена.
-
-This Arduino library relates to [QuadDisplay2].
+Arduino library for the [QuadDisplay2] module.
 
 Installation
 ============
 
-Open Arduino IDE. Choose "Scketch" → "Iport library" → "Add library…".
-In appeared window choose downloaded zip.
+1. Download Library in //.zip// format.
+2. Open Arduino IDE.
+3. Go to «Sketch» → «Include Library» → «Add .ZIP Library».
+4. You will be asked to select the library you would like to add. Navigate to the .zip file's location and open it.
