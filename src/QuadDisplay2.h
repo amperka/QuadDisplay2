@@ -1,5 +1,15 @@
-#ifndef QUAD_DISPLAY
-#define QUAD_DISPLAY
+/*
+ * This file is a part of Troyka modules library.
+ *
+ * Defines: QuadDisplay2 module library
+ * © Amperka LLC (https://amperka.com, dev@amperka.com)
+ * 
+ * Author: <dev@amperka.ru>
+ * License: GPLv3, all text here must be included in any redistribution.
+ */
+
+#ifndef __QUAD_DISPLAY__
+#define __QUAD_DISPLAY__
 
 #include "pins_arduino.h"
 #include <Arduino.h>
