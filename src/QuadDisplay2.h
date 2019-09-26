@@ -4,7 +4,7 @@
  * Product page: https://https://amperka.ru/product/troyka-quad-display
  * © Amperka LLC (https://amperka.com, dev@amperka.com)
  * 
- * Author: <dev@amperka.ru>
+ * Author: Igor Dementjev <igor@amperka.ru>
  * License: GPLv3, all text here must be included in any redistribution.
  */
 
