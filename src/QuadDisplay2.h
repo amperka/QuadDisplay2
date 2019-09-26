@@ -4,14 +4,13 @@
  * Product page: https://https://amperka.ru/product/troyka-quad-display
  * © Amperka LLC (https://amperka.com, dev@amperka.com)
  * 
- * Author: Igor Dementjev <igor@amperka.ru>
+ * Author: Igor Dementiev <igor@amperka.ru>
  * License: GPLv3, all text here must be included in any redistribution.
  */
 
 #ifndef __QUAD_DISPLAY__
 #define __QUAD_DISPLAY__
 
-#include "pins_arduino.h"
 #include <Arduino.h>
 #include <SPI.h>
 #include <inttypes.h>
