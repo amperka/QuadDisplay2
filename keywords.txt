@@ -1,0 +1,70 @@
+#######################################
+# Syntax Coloring Map Dragster
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+QuadDisplay		KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin 			KEYWORD2
+end 			KEYWORD2
+displayInt		KEYWORD2
+displayFloat 		KEYWORD2
+displayDigits 		KEYWORD2
+displaySegments		KEYWORD2
+displayTemperatureC	KEYWORD2
+displayHumidity		KEYWORD2
+displayScore		KEYWORD2
+displayClear		KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+QD_NONE			LITERAL1
+QD_DOT			LITERAL1
+QD_MINUS		LITERAL1
+QD_UNDERSCORE		LITERAL1
+QD_DEGREE		LITERAL1
+QD_UNDER_DEGREE		LITERAL1
+QD_0			LITERAL1
+QD_1			LITERAL1
+QD_2			LITERAL1
+QD_3			LITERAL1
+QD_4			LITERAL1
+QD_5			LITERAL1
+QD_6			LITERAL1
+QD_7			LITERAL1
+QD_8			LITERAL1
+QD_9			LITERAL1
+QD_A			LITERAL1
+QD_a			LITERAL1
+QD_b			LITERAL1
+QD_C			LITERAL1
+QD_c			LITERAL1
+QD_d			LITERAL1
+QD_E			LITERAL1
+QD_f			LITERAL1
+QD_F			LITERAL1
+QD_H			LITERAL1
+QD_h			LITERAL1
+QD_I			LITERAL1
+QD_J			LITERAL1
+QD_K			LITERAL1
+QD_L			LITERAL1
+QD_n			LITERAL1
+QD_o			LITERAL1
+QD_O			LITERAL1
+QD_P			LITERAL1
+QD_r			LITERAL1
+QD_S			LITERAL1
+QD_t			LITERAL1
+QD_u			LITERAL1
+QD_U			LITERAL1
+QD_Y			LITERAL1
