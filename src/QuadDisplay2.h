@@ -1,7 +1,7 @@
 /*
- * This file is a part of Troyka modules library.
+ * This file is a part of QuadDisplay2 library.
  *
- * Defines: QuadDisplay2 module library
+ * Product page: https://https://amperka.ru/product/troyka-quad-display
  * © Amperka LLC (https://amperka.com, dev@amperka.com)
  * 
  * Author: <dev@amperka.ru>
