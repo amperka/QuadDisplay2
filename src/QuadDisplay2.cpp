@@ -179,11 +179,11 @@ void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots) {
 }
 
 void QuadDisplay::displayFloat(float val, uint8_t precision, bool padZeros) {
-    uint8_t dot = 0;
+    uint8_t dot = 0b0001;
     while (precision) {
         val *= 10;
         --precision;
-        dot++;
+        dot <<= 1;
     }
     displayInt((int)val, padZeros, dot);
 }
