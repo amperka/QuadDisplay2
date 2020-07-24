@@ -1,7 +1,7 @@
 QuadDisplay2
 ============
 
-Arduino library for the [QuadDisplay2] module.
+Arduino library for the [QuadDisplay](https://amperka.com/products/troyka-quad-display) module.
 
 Installation
 ============
