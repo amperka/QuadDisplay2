@@ -101,7 +101,7 @@ private:
 public:
     QuadDisplay(uint8_t pinCS);
     QuadDisplay(uint8_t pinCS, boolean useSPI);
-    QuadDisplay(uint8_t pinCS, uint8_t pinCOPI, uint8_t pinSCK);
+    QuadDisplay(uint8_t pinCS, uint8_t pinMOSI, uint8_t pinSCK);
     void begin();
     void end();
     void displayInt(int val, bool padZeros = false, uint8_t dots = 0x00);

@@ -24,14 +24,14 @@ QuadDisplay::QuadDisplay(uint8_t pinCS, boolean useSPI) {
     } else {
         _pinCS = pinCS;
         _pinSCK = SCK;
-        _pinDI = COPI;
+        _pinDI = MOSI;
         _useSPI = false;
     }
 }
 
-QuadDisplay::QuadDisplay(uint8_t pinCS, uint8_t pinCOPI, uint8_t pinSCK) {
+QuadDisplay::QuadDisplay(uint8_t pinCS, uint8_t pinMOSI, uint8_t pinSCK) {
     _pinCS = pinCS;
-    _pinDI = pinCOPI;
+    _pinDI = pinMOSI;
     _pinSCK = pinSCK;
 }
 
