@@ -24,20 +24,18 @@ QuadDisplay::QuadDisplay(uint8_t pinCS, boolean useSPI) {
     } else {
         _pinCS = pinCS;
         _pinSCK = SCK;
-        _pinDI = MOSI;
+        _pinDI = COPI;
         _useSPI = false;
     }
 }
 
-QuadDisplay::QuadDisplay(uint8_t pinCS, uint8_t pinMOSI, uint8_t pinSCK) {
+QuadDisplay::QuadDisplay(uint8_t pinCS, uint8_t pinCOPI, uint8_t pinSCK) {
     _pinCS = pinCS;
-    _pinDI = pinMOSI;
+    _pinDI = pinCOPI;
     _pinSCK = pinSCK;
 }
 
 void QuadDisplay::begin() {
-    pinMode(_pinCS, OUTPUT);
-    digitalWrite(_pinCS, LOW);
     if (_useSPI) {
         SPI.begin();
     } else {
@@ -46,6 +44,8 @@ void QuadDisplay::begin() {
         digitalWrite(_pinSCK, LOW);
         digitalWrite(_pinDI, LOW);
     }
+    pinMode(_pinCS, OUTPUT);
+    digitalWrite(_pinCS, LOW);
 }
 
 void QuadDisplay::end() {
@@ -59,74 +59,56 @@ void QuadDisplay::end() {
 
 void QuadDisplay::beginWrite() {
     digitalWrite(_pinSCK, LOW);
-    digitalWrite(_pinDI, LOW);
     digitalWrite(_pinCS, LOW);
 }
 
-void QuadDisplay::writeData(uint8_t data, uint8_t n) {
-    shiftOut(_pinDI, _pinSCK, LSBFIRST, data);
+void QuadDisplay::pulse(uint8_t pin) {
+    digitalWrite(pin, HIGH);
+    digitalWrite(pin, LOW);
 }
 
-void QuadDisplay::writeData(uint32_t data, uint8_t n) {
-    for (uint8_t i = n; i > 0; i--) {
-        digitalWrite(_pinDI, (data & 1));
-        digitalWrite(_pinSCK, HIGH);
-        digitalWrite(_pinSCK, LOW);
-        data >>= 1;
+void QuadDisplay::writeData(uint8_t data) {
+    digitalWrite(_pinSCK, LOW);
+    shiftOut(_pinDI, _pinSCK, MSBFIRST, data);
+}
+
+void QuadDisplay::writeData(uint32_t data) {
+    for (uint8_t n = 32; n > 0; n--) {
+        digitalWrite(_pinDI, getBit(data, n));
+        pulse(_pinSCK);
     }
 }
 
 void QuadDisplay::endWrite() {
-    digitalWrite(_pinDI, HIGH);
-    digitalWrite(_pinSCK, HIGH);
-    digitalWrite(_pinSCK, LOW);
-    digitalWrite(_pinCS, HIGH);
-    digitalWrite(_pinDI, LOW);
-    digitalWrite(_pinSCK, LOW);
-}
-
-uint8_t QuadDisplay::reverse(uint8_t x) {
-    uint8_t mask = x & 0x01;
-    x = x >> 1;
-    x = ((x & 0x55) << 1) | ((x & 0xAA) >> 1);
-    x = ((x & 0xCC) >> 2) | ((x & 0x33) << 2);
-    x = (x >> 4) | (x << 4);
-    x = x | mask;
-    return x;
-}
-
-void QuadDisplay::setDots(uint8_t array[]) {
-    for (int i = 1; i < 4; i++) {
-        if (array[i] & 0x01 == 0) {
-            array[i - 1] &= 0xFE;
-            array[i] |= 0x01;
-        }
-    }
+    pulse(_pinCS);
 }
 
 void QuadDisplay::displayDigits(uint8_t digit1, uint8_t digit2, uint8_t digit3,
     uint8_t digit4) {
+    beginWrite();
     if (_useSPI) {
         uint8_t digitsArray[] = { digit1, digit2, digit3, digit4 };
-        setDots(digitsArray);
-        digitalWrite(_pinCS, LOW);
         for (int i = 0; i < 4; i++) {
-            SPI.transfer(reverse(digitsArray[i]));
+            SPI.transfer(digitsArray[i]);
         }
-        digitalWrite(_pinCS, HIGH);
     } else {
-        beginWrite();
         writeData(digit1);
         writeData(digit2);
         writeData(digit3);
         writeData(digit4);
-        endWrite();
     }
+    endWrite();
 }
 
 void QuadDisplay::displaySegments(uint32_t digits) {
     beginWrite();
-    writeData(digits);
+    if (_useSPI) {
+        for (uint8_t quad = 0; quad < 4; quad++) {
+            SPI.transfer((uint8_t)(digits >> (3 - quad) * 8));
+        }
+    } else {
+        writeData(digits);
+    }
     endWrite();
 }
 
@@ -135,7 +117,11 @@ void QuadDisplay::displayClear() {
 }
 
 uint8_t QuadDisplay::getBit(uint8_t byte, uint8_t number) {
-    return ((byte >> (8 - number)) & 1);
+    return ((byte >> number - 1) & 1);
+}
+
+uint8_t QuadDisplay::getBit(uint32_t digits, uint8_t number) {
+    return ((digits >> number - 1) & 1);
 }
 
 void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots) {
@@ -161,17 +147,17 @@ void QuadDisplay::displayInt(int val, bool padZeros, uint8_t dots) {
             digits[i - 1] = QD_MINUS;
         }
 
-        if (getBit(dots, 8)) {
-            digits[3] &= QD_DOT;
+        if (getBit(dots, 4)) {
+            digits[0] &= QD_DOT;
         }
-        if (getBit(dots, 7)) {
-            digits[2] &= QD_DOT;
-        }
-        if (getBit(dots, 6)) {
+        if (getBit(dots, 3)) {
             digits[1] &= QD_DOT;
         }
-        if (getBit(dots, 5)) {
-            digits[0] &= QD_DOT;
+        if (getBit(dots, 2)) {
+            digits[2] &= QD_DOT;
+        }
+        if (getBit(dots, 1)) {
+            digits[3] &= QD_DOT;
         }
     }
 
